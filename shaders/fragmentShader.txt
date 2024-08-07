@@ -1,12 +1,9 @@
 #version 330 core
+out vec4 FragColor;
 
-out vec4 Fcolor;
+in vec3 ourColor;
 
-in vec3 Vcolor;
-in vec2 TexCoord; 
-
-uniform sampler2D texture1;
 void main()
 {
-   Fcolor = texture(texture1, TexCoord)*vec4(Vcolor, 1.0); //texture is a built in GLSL function
+    FragColor = vec4(ourColor, 1.0f);
 }
