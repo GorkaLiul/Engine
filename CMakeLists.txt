@@ -11,6 +11,7 @@ project(Engine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glad/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 include_directories($CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SOURCES
