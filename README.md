@@ -1,5 +1,5 @@
 # Engine
- 3d rendering engine ImGui Cmake GLFW GLAD (linux compatible)
+ Modular extension based 3d rendering engine, **USES:** ImGui Cmake GLFW GLAD (linux compatible)
 
 
 ## Instalation: 
