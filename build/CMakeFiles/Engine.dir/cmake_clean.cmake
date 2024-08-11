@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/Engine.dir/src/gui.cpp.o"
+  "CMakeFiles/Engine.dir/src/gui.cpp.o.d"
   "CMakeFiles/Engine.dir/src/main.cpp.o"
   "CMakeFiles/Engine.dir/src/main.cpp.o.d"
   "CMakeFiles/Engine.dir/src/shader.cpp.o"

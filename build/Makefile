@@ -155,6 +155,30 @@ imgui/fast:
 	$(MAKE) $(MAKESILENT) -f imgui/CMakeFiles/imgui.dir/build.make imgui/CMakeFiles/imgui.dir/build
 .PHONY : imgui/fast
 
+src/gui.o: src/gui.cpp.o
+.PHONY : src/gui.o
+
+# target to build an object file
+src/gui.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Engine.dir/build.make CMakeFiles/Engine.dir/src/gui.cpp.o
+.PHONY : src/gui.cpp.o
+
+src/gui.i: src/gui.cpp.i
+.PHONY : src/gui.i
+
+# target to preprocess a source file
+src/gui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Engine.dir/build.make CMakeFiles/Engine.dir/src/gui.cpp.i
+.PHONY : src/gui.cpp.i
+
+src/gui.s: src/gui.cpp.s
+.PHONY : src/gui.s
+
+# target to generate assembly for a file
+src/gui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Engine.dir/build.make CMakeFiles/Engine.dir/src/gui.cpp.s
+.PHONY : src/gui.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -238,6 +262,9 @@ help:
 	@echo "... Engine"
 	@echo "... glad"
 	@echo "... imgui"
+	@echo "... src/gui.o"
+	@echo "... src/gui.i"
+	@echo "... src/gui.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

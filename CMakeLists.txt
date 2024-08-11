@@ -11,12 +11,14 @@ project(Engine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glad/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glm)
 
 include_directories($CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SOURCES
 	src/main.cpp
 	src/window.cpp
   src/shader.cpp
+  src/gui.cpp
 )
 
 #executable target

@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/home/liul/Desktop/Engine/include -I/home/liul/Desktop/Engine/glad/include -I/home/liul/Desktop/Engine/imgui -I"/home/liul/Desktop/Engine/\$$CMAKE_CURRENT_SOURCE_DIR}/src"
+C_INCLUDES = -I/home/liul/Desktop/Engine/include -I/home/liul/Desktop/Engine/glad/include -I/home/liul/Desktop/Engine/imgui -I/home/liul/Desktop/Engine/glm -I"/home/liul/Desktop/Engine/\$$CMAKE_CURRENT_SOURCE_DIR}/src"
 
 C_FLAGS = 
 

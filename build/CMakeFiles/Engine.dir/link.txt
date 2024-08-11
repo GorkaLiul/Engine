@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/Engine.dir/src/main.cpp.o CMakeFiles/Engine.dir/src/window.cpp.o CMakeFiles/Engine.dir/src/shader.cpp.o -o Engine  /usr/lib/x86_64-linux-gnu/libglfw.so.3.3 glad/libglad.a imgui/libimgui.a 
+/usr/bin/c++ CMakeFiles/Engine.dir/src/main.cpp.o CMakeFiles/Engine.dir/src/window.cpp.o CMakeFiles/Engine.dir/src/shader.cpp.o CMakeFiles/Engine.dir/src/gui.cpp.o -o Engine  /usr/lib/x86_64-linux-gnu/libglfw.so.3.3 glad/libglad.a imgui/libimgui.a 
