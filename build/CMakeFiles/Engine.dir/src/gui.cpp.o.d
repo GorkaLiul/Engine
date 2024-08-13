@@ -29,6 +29,8 @@ CMakeFiles/Engine.dir/src/gui.cpp.o: \
  /usr/include/strings.h /usr/include/assert.h \
  /home/liul/Desktop/Engine/imgui/backends/imgui_impl_glfw.h \
  /home/liul/Desktop/Engine/imgui/backends/imgui_impl_opengl3.h \
+ /home/liul/Desktop/Engine/imgui/imgui_toggle.h \
+ /home/liul/Desktop/Engine/imgui/imgui_offset_rect.h \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \

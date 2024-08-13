@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_toggle.h"
 #include <deque> // For storing frame times
 #include <vector> // For plotting
 
@@ -16,6 +17,9 @@ public:
     void destroy();
 private:
     void plotFrameRateGraph(); // Method to plot the frame rate graph
+    void topBarmenu();
+    void overlay();
+    void plotOverlay();
     GLFWwindow* window;
 
     std::deque<float> frameTimes; // To store frame times

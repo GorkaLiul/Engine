@@ -2,6 +2,9 @@
 #include<iostream>
 #include <algorithm> // For std::max_element
 #include<numeric>
+#include <vector>
+
+void topBarmenu();
 
 ui::ui(GLFWwindow* window) : window(window), maxHistoryTime(5.0f), frameTimeSum(0.0f), timeAccumulator(0.0f), deltaTime(0.0f) {
     // Setup ImGui context
@@ -21,8 +24,10 @@ ui::ui(GLFWwindow* window) : window(window), maxHistoryTime(5.0f), frameTimeSum(
     // Set graph line color to yellow
     ImGuiStyle &style = ImGui::GetStyle();
     style.WindowRounding = 5.0f;
-    ImGui::GetStyle().Colors[ImGuiCol_PlotLines] = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow color
+    style.FrameBorderSize = 2; 
+    style.FrameRounding = 6;
 }
+
 
 void ui::newFrame() {
     ImGui_ImplOpenGL3_NewFrame();
@@ -32,49 +37,17 @@ void ui::newFrame() {
 
 void ui::mainGui(bool &render, bool &wireframe, float &colors) {
   glfwGetWindowSize(window, &x, &y);
-    ImGui::SetNextWindowSize(ImVec2(400, y)); // Set window height to 200 pixels and full width
-    ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set window position to the top-left corner
-    ImGui::Begin("Engine", nullptr);
-    ImGui::Checkbox("Render: ", &render);
-    ImGui::Checkbox("WireFrame", &wireframe);
-    ImGui::ColorEdit4("Color: ", &colors);
-    ImGui::ShowDemoWindow();
+  overlay();
+  plotOverlay();
+ 
 
-  ImGui::SameLine();
-    
-    ImVec2 contentSize = ImGui::GetWindowSize();
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    ImGui::End();
-    ImGui::SetNextWindowSize(ImVec2( x - contentSize.x, 110));
-    ImGui::SetNextWindowPos(ImVec2(contentSize.x, 0)); // Set window position to the top-left corner
-    ImGui::Begin("plot", nullptr);
-
-    // Update frame time
-    static float previousFrameTime = static_cast<float>(glfwGetTime());
-    float currentFrameTime = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrameTime - previousFrameTime;
-    previousFrameTime = currentFrameTime;
-
-    // Accumulate frame times
-    frameTimeSum += deltaTime;
-    frameTimes.push_back(deltaTime);
-    if (frameTimeSum > maxHistoryTime) {
-        frameTimeSum -= frameTimes.front();
-        frameTimes.pop_front();
-    }
-
-    // Plot the frame rate graph with scaling for sensitivity
-    plotFrameRateGraph();
-
-    ImGui::End();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    
-    // Ensure the framebuffer size is used correctly
-    int display_w, display_h;
-    glfwGetFramebufferSize(window, &display_w, &display_h);
-    glViewport(0, 0, display_w, display_h);
+  // Ensure the framebuffer size is used correctly
+  int display_w, display_h;
+  glfwGetFramebufferSize(window, &display_w, &display_h);
+  glViewport(0, 0, display_w, display_h);
 }
 
 void ui::destroy() {
@@ -83,26 +56,124 @@ void ui::destroy() {
     ImGui::DestroyContext();
 }
 
-void ui::plotFrameRateGraph() {
-    glfwGetWindowSize(window, &x, &y);
-    ImGui::Text("Frame Rate plot:");
 
-    // Convert frame times to frame rates
-    std::vector<float> frameRates(frameTimes.size());
-    std::transform(frameTimes.begin(), frameTimes.end(), frameRates.begin(),
-        [](float frameTime) { return 1.0f / frameTime; });
+void ui::overlay(){
 
-    // Aggregate frame rates over small windows
-    size_t windowSize = 10; // Size of the window for aggregation
-    std::vector<float> aggregatedRates;
-    
-    for (size_t i = 0; i <= frameRates.size() - windowSize; ++i) {
-        float sum = std::accumulate(frameRates.begin() + i, frameRates.begin() + i + windowSize, 0.0f);
-        aggregatedRates.push_back(sum / windowSize);
+    static bool p_open = true;
+    static int location = 0;
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+
+    // Determine window position based on location
+    if (location >= 0)
+    {
+        const float PAD = 10.0f;
+        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+        ImVec2 work_size = viewport->WorkSize;
+        ImVec2 window_pos, window_pos_pivot;
+        window_pos.x = (location & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
+        window_pos.y = (location & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
+        window_pos_pivot.x = (location & 1) ? 1.0f : 0.0f;
+        window_pos_pivot.y = (location & 2) ? 1.0f : 0.0f;
+        ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+        window_flags |= ImGuiWindowFlags_NoMove;
+    }
+    else if (location == -2)
+    {
+        // Center window
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        window_flags |= ImGuiWindowFlags_NoMove;
     }
 
-    // Plot aggregated frame rates with adjusted Y-axis range
-    float maxRate = *std::max_element(aggregatedRates.begin(), aggregatedRates.end());
-    ImGui::PlotLines("", aggregatedRates.data(), aggregatedRates.size(), 0, nullptr, 0.0f, maxRate * 1.2f, ImVec2(x-400,60));
+    ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+
+    // Begin the ImGui window
+    if (ImGui::Begin("Cursor and Framerate Overlay", &p_open, window_flags))
+    {
+        ImGui::Text("Cursor and Framerate Overlay\n(right-click to change position)");
+        ImGui::Separator();
+
+        // Display mouse position
+        if (ImGui::IsMousePosValid())
+            ImGui::Text("Mouse Position: (%.1f, %.1f)", io.MousePos.x, io.MousePos.y);
+        else
+            ImGui::Text("Mouse Position: <invalid>");
+
+        // Display framerate
+        ImGui::Text("Framerate: %.1f FPS", io.Framerate);
+
+        // Context menu to change overlay position
+        if (ImGui::BeginPopupContextWindow())
+        {
+            if (ImGui::MenuItem("Custom", NULL, location == -1)) location = -1;
+            if (ImGui::MenuItem("Center", NULL, location == -2)) location = -2;
+            if (ImGui::MenuItem("Top-left", NULL, location == 0)) location = 0;
+            if (ImGui::MenuItem("Top-right", NULL, location == 1)) location = 1;
+            if (ImGui::MenuItem("Bottom-left", NULL, location == 2)) location = 2;
+            if (ImGui::MenuItem("Bottom-right", NULL, location == 3)) location = 3;
+            if (ImGui::MenuItem("Close")) p_open = false;
+            ImGui::EndPopup();
+        }
+    }
+
+    ImGui::End();
 }
+
+void ui::plotOverlay(){
+
+    static bool p_open = true;
+    static std::vector<float> framerates;
+    static float time_accumulator = 0.0f;
+    static float max_time = 5.0f; // 5 seconds of history
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+
+    // Accumulate time and store framerates
+    time_accumulator += io.DeltaTime;
+    if (time_accumulator >= 1.0f / 60.0f) // Update every frame (or every 1/60 second)
+    {
+        framerates.push_back(io.Framerate);
+        time_accumulator = 0.0f;
+    }
+
+    // Remove old framerates
+    while (framerates.size() > max_time * 60) // assuming 60 FPS
+    {
+        framerates.erase(framerates.begin());
+    }
+
+    // Position the window next to the current overlay
+    ImVec2 overlay_pos = ImGui::GetMainViewport()->Pos;
+    overlay_pos.x += 260.0f; // Adjust this value as needed to position the window correctly
+    ImGui::SetNextWindowPos(overlay_pos, ImGuiCond_Always, ImVec2(0.0f, -0.1f));
+
+    ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+
+    if (ImGui::Begin("Framerate Plot Overlay", &p_open, window_flags))
+    {
+        ImGui::Text("Framerate Plot (last 5 seconds)");
+
+        if (!framerates.empty())
+        {
+            ImGui::PlotLines("", framerates.data(), framerates.size(), 0, nullptr, FLT_MAX, FLT_MAX, ImVec2(0, 50.0f));
+        }
+        else
+        {
+            ImGui::Text("No data yet...");
+        }
+
+        // Context menu to close the overlay
+        if (ImGui::BeginPopupContextWindow())
+        {
+            if (ImGui::MenuItem("Close")) p_open = false;
+            ImGui::EndPopup();
+        }
+    }
+
+    ImGui::End();
+}
+
+
 
