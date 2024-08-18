@@ -13,7 +13,7 @@ class ui {
 public:
     ui(GLFWwindow* window);
     void newFrame();
-    void mainGui( bool &render, bool &wireframe, float &colors);
+    void mainGui();
     void destroy();
 private:
     void plotFrameRateGraph(); // Method to plot the frame rate graph
@@ -21,6 +21,7 @@ private:
     void overlay();
     void plotOverlay();
     GLFWwindow* window;
+    bool editor();
 
     std::deque<float> frameTimes; // To store frame times
     float maxHistoryTime; // Max history time in seconds
@@ -29,6 +30,9 @@ private:
     float deltaTime;       // Time difference between frames
     
     int x, y;
+public:
+    bool wireframe;
+
     //bool render;
 };
 

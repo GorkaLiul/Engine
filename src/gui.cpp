@@ -1,4 +1,5 @@
 #include "gui.h"
+
 #include<iostream>
 #include <algorithm> // For std::max_element
 #include<numeric>
@@ -35,10 +36,11 @@ void ui::newFrame() {
     ImGui::NewFrame();
 }
 
-void ui::mainGui(bool &render, bool &wireframe, float &colors) {
+void ui::mainGui() {
   glfwGetWindowSize(window, &x, &y);
   overlay();
   plotOverlay();
+  editor();
  
 
   ImGui::Render();
@@ -173,6 +175,18 @@ void ui::plotOverlay(){
     }
 
     ImGui::End();
+}
+
+bool ui::editor(){
+  ImGui::Begin("Editor");
+  ImGui::Checkbox("wireframe enable: ", &wireframe);
+  if(wireframe){
+    ImGui::End();
+    return true;
+  }
+  ImGui::End();
+  return false;
+
 }
 
 

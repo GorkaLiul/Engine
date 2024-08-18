@@ -36,5 +36,5 @@ void processInput(GLFWwindow* window){
 }
 
 void resize_viewport_callback(GLFWwindow* window, int width, int height){
-	glViewport(0,0,width, height);
+	glViewport(0,0,width-500, height-200);
 }
