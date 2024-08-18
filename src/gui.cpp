@@ -189,5 +189,3 @@ bool ui::editor(){
 
 }
 
-
-
